@@ -17,6 +17,12 @@ from distllm.generate.prompts import IdentityPromptTemplateConfig
 from distllm.rag.search import Retriever
 from distllm.rag.search import RetrieverConfig
 from distllm.utils import BaseConfig
+from distllm.openai_gen import OpenAIGenerator
+from distllm.openai_gen import OpenAIGeneratorConfig
+from disllm.argo_gen import ArgoGenerator
+from disllm.argo_gen import ArgoGeneratorConfig
+
+from distllm.distllm.openai_gen import OpenAIGeneratorConfig
 
 
 # -----------------------------------------------------------------------------
@@ -312,9 +318,9 @@ class RagGenerator:
 class RetrievalAugmentedGenerationConfig(BaseConfig):
     """Configuration for the retrieval-augmented generation model."""
 
-    generator_config: VLLMGeneratorConfig = Field(
+    generator_config: BaseConfig = Field(
         ...,
-        description='Settings for the VLLM generator',
+        description='Settings for the generator',
     )
     retriever_config: RetrieverConfig | None = Field(
         None,
@@ -328,7 +334,11 @@ class RetrievalAugmentedGenerationConfig(BaseConfig):
     def get_rag_model(self) -> RagGenerator:
         """Instantiate the RAG model."""
         # Initialize the generator
-        generator = VLLMGenerator(self.generator_config)
+        if isinstance(self.generator_config, VLLMGeneratorConfig):
+            generator = VLLMGenerator(self.generator_config)
+        elif isinstance(self.generator_config, ArgoGeneratorConfig):
+            generator = ArgoGenerator(self.generator_config)
+        elif isinstance(self.generator_config, OpenAIGeneratorConfig):
         # Initialize the retriever
         retriever = None
         if self.retriever_config is not None:
