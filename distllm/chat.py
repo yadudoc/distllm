@@ -22,8 +22,6 @@ from distllm.openai_gen import OpenAIGeneratorConfig
 from distllm.argo_gen import ArgoGenerator
 from distllm.argo_gen import ArgoGeneratorConfig
 
-from distllm.distllm.openai_gen import OpenAIGeneratorConfig
-
 
 # -----------------------------------------------------------------------------
 # Prompt Templates
