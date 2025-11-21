@@ -33,9 +33,10 @@ class HPRAGAgent(Agent):
 
     def __init__(self, config: ChatAppConfig):
         self.config = config
+        self.initialized = False
 
     async def agent_on_startup(self) -> None:
-
+        self.initialized = True
 
     @action
     async def machine_info(self) -> dict[str, t.Any]:
@@ -48,6 +49,7 @@ class HPRAGAgent(Agent):
             'platinfo': platform.uname,
             'sys_info': str(sys.version_info),
             'dill': dill.__version__,
+            'init': self.initialized
         }
 
 
