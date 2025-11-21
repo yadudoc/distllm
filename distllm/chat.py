@@ -339,6 +339,7 @@ class RetrievalAugmentedGenerationConfig(BaseConfig):
         elif isinstance(self.generator_config, ArgoGeneratorConfig):
             generator = ArgoGenerator(self.generator_config)
         elif isinstance(self.generator_config, OpenAIGeneratorConfig):
+            generator = OpenAIGenerator(self.generator_config)
         # Initialize the retriever
         retriever = None
         if self.retriever_config is not None:
