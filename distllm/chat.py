@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 import requests
 from pydantic import Field
+import logging
 
 from distllm.generate.prompts import IdentityPromptTemplate
 from distllm.generate.prompts import IdentityPromptTemplateConfig
@@ -22,7 +23,7 @@ from distllm.openai_gen import OpenAIGeneratorConfig
 from distllm.argo_gen import ArgoGenerator
 from distllm.argo_gen import ArgoGeneratorConfig
 
-
+logger = logging.getLogger(__name__)
 # -----------------------------------------------------------------------------
 # Prompt Templates
 # -----------------------------------------------------------------------------
@@ -332,12 +333,17 @@ class RetrievalAugmentedGenerationConfig(BaseConfig):
     def get_rag_model(self) -> RagGenerator:
         """Instantiate the RAG model."""
         # Initialize the generator
+        logger.warning("In get_rag_model()")
         if isinstance(self.generator_config, VLLMGeneratorConfig):
             generator = VLLMGenerator(self.generator_config)
         elif isinstance(self.generator_config, ArgoGeneratorConfig):
             generator = ArgoGenerator(self.generator_config)
         elif isinstance(self.generator_config, OpenAIGeneratorConfig):
+            logger.warning("")
             generator = OpenAIGenerator(self.generator_config)
+
+        else:
+            raise ValueError(f'Unknown generator type {self.generator_config}')
         # Initialize the retriever
         retriever = None
         if self.retriever_config is not None:
@@ -580,10 +586,14 @@ def chat_with_model(config: ChatAppConfig) -> None:
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
 
+    logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
+    logger.info("Starting session")
     # Load the configuration
     config = ChatAppConfig.from_yaml(args.config)
+    logger.debug(f'Config: {config}')
 
     # Start the interactive chat
     chat_with_model(config)
