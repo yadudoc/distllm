@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
-import openai
 
 import numpy as np
 import openai
@@ -15,14 +15,10 @@ import requests
 from dotenv import load_dotenv
 from pydantic import Field
 
-from distllm.generate.prompts import IdentityPromptTemplate
-from distllm.generate.prompts import IdentityPromptTemplateConfig
-from distllm.rag.search import Retriever
-from distllm.rag.search import RetrieverConfig
+from distllm.generate.prompts import (IdentityPromptTemplate,
+                                      IdentityPromptTemplateConfig)
+from distllm.rag.search import Retriever, RetrieverConfig
 from distllm.utils import BaseConfig
-
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -229,8 +225,8 @@ class OpenAIGenerator:
         self.temperature = config.temperature
         self.max_tokens = config.max_tokens
 
-        logger.warning(f"YADU: Temperature : {self.temperature}")
-        logger.warning(f"IGNORING TEMPERATURE")
+        logger.warning(f'YADU: Temperature : {self.temperature}')
+        logger.warning(f'IGNORING TEMPERATURE')
         assert config.api_key, 'Chat system requires OPENAI_API_KEY'
 
         # Initialize OpenAI client with Argo proxy settings
@@ -366,9 +362,7 @@ class RagGenerator:
                         if column == 'text':
                             # Show truncated text for readability
                             text_preview = (
-                                value[:200] + '...'
-                                if len(value) > 200
-                                else value
+                                value[:200] + '...' if len(value) > 200 else value
                             )
                             print(f'  - {column}: {text_preview}')
                         elif column == 'embeddings':
@@ -553,9 +547,7 @@ def print_retrieval_inspection(results: dict) -> None:
             if attr_name == 'text':
                 # Truncate text for readability
                 text_preview = (
-                    attr_value[:200] + '...'
-                    if len(attr_value) > 200
-                    else attr_value
+                    attr_value[:200] + '...' if len(attr_value) > 200 else attr_value
                 )
                 print(f'  - {attr_name}: {text_preview}')
             elif attr_name == 'embeddings':
@@ -663,9 +655,7 @@ def chat_with_model(config: ChatAppConfig) -> None:
     # -------------------------------------------------------------------------
     timestamp_str = datetime.now().strftime('%Y%m%d_%H%M%S')
     os.makedirs(config.save_conversation_path, exist_ok=True)
-    filename = (
-        f'{config.save_conversation_path}/conversation_{timestamp_str}.txt'
-    )
+    filename = f'{config.save_conversation_path}/conversation_{timestamp_str}.txt'
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             for speaker, text in conversation_history:
