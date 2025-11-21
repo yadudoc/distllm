@@ -19,8 +19,8 @@ from distllm.rag.search import RetrieverConfig
 from distllm.utils import BaseConfig
 from distllm.openai_gen import OpenAIGenerator
 from distllm.openai_gen import OpenAIGeneratorConfig
-from disllm.argo_gen import ArgoGenerator
-from disllm.argo_gen import ArgoGeneratorConfig
+from distllm.argo_gen import ArgoGenerator
+from distllm.argo_gen import ArgoGeneratorConfig
 
 from distllm.distllm.openai_gen import OpenAIGeneratorConfig
 
